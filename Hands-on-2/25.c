@@ -1,0 +1,29 @@
+#include <stdio.h> 
+#include <sys/ipc.h> 
+#include <sys/msg.h> 
+
+int main() 
+{ 
+	key_t key; 
+	int msqid; 
+	key = ftok(".", 'a'); 
+
+	msqid = msgget(key, 0666 | IPC_CREAT); 
+    	struct msqid_ds ms_info;
+	msgctl(msqid,IPC_STAT,&ms_info);
+    	struct ipc_perm permissions = ms_info.msg_perm;
+    	printf("access permissions = %d\n",permissions.mode);
+    	printf("uid = %d ",permissions.uid);
+    	printf("gid = %d\n",permissions.gid);
+    	printf("time of last message sent = %ld\n",ms_info.msg_stime);
+    	printf("time of last message received = %ld\n",ms_info.msg_rtime);
+    	printf("time of last change = %ld\n",ms_info.msg_ctime);
+    	printf("size of message queue = %ld\n",ms_info.__msg_cbytes);
+    	printf("number of messages = %ld\n",ms_info.msg_qnum);
+    	printf("maximum number of bytes allowed = %ld\n",ms_info.msg_qbytes);
+    	printf("pid of last msgsnd = %d\n",ms_info.msg_lspid);
+    	printf("pid of last msgrcvd = %d\n",ms_info.msg_lrpid);
+    
+	return 0; 
+} 
+
